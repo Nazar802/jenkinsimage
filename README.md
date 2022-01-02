@@ -11,17 +11,17 @@ To run it execute the bash script (jstart.sh).
 
 For it to run properly you'll first need to set up the environment variables and have an SSH key on your machine.
 Environment variables:
-  - JENKINS_ADMIN_ID                Your default Jenkins user
-  - JENKINS_ADMIN_PASSWORD          Default password
-  - JENKINS_RESERVE_URL             Jenkins server URL
-  - ACR_ADDR                        Azure container registry address
-  - ACR_PASS                        Password to access the ACR
-  - ACR_UID                         ACR user
-  - DATASOURCE_PASSWORD             Password to access database
-  - DATASOURCE_URL                  Database URL
-  - DATASOURCE_USER                 Database user
-  - JWT_SECRET                      Needed for app authorization (any string will do)
-  - MY_PASSWORD                     Any string
-  - SUBSCRIPTION_ID                 Your Azure subscription ID
-  - VMIP                            Azure VM ip-address
-  - SSH_PRIVATE_FILE_PATH           Path to ssh key on docker container (NOT VM)
+  <pre>- JENKINS_ADMIN_ID                Your default Jenkins user</pre>
+  <pre>- JENKINS_ADMIN_PASSWORD          Default password</pre>
+  <pre>- JENKINS_RESERVE_URL             Jenkins server URL</pre>
+  <pre>- ACR_ADDR                        Azure container registry address</pre>
+  <pre>- ACR_PASS                        Password to access the ACR</pre>
+  <pre>- ACR_UID                         ACR user</pre>
+  <pre>- DATASOURCE_PASSWORD             Password to access database</pre>
+  <pre>- DATASOURCE_URL                  Database URL</pre>
+  <pre>- DATASOURCE_USER                 Database user</pre>
+  <pre>- JWT_SECRET                      Needed for app authorization (any string will do)</pre>
+  <pre>- MY_PASSWORD                     Any string</pre>
+  <pre>- SUBSCRIPTION_ID                 Your Azure subscription ID</pre>
+  <pre>- VMIP                            Azure VM ip-address</pre>
+  <pre>- SSH_PRIVATE_FILE_PATH           Path to ssh key on docker container (NOT VM)</pre>
