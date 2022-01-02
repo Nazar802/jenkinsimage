@@ -1,0 +1,68 @@
+jenkins:
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: ${JENKINS_ADMIN_ID}
+          password: ${JENKINS_ADMIN_PASSWORD}
+
+  authorizationStrategy:
+    globalMatrix:
+      permissions:
+        - "Overall/Administer:${JENKINS_ADMIN_ID}"
+        - "Overall/Read:authenticated"
+  remotingSecurity:
+    enabled: true
+  
+  globalNodeProperties:
+  - envVars:
+      env:
+      - key: "ACR_ADDR"
+        value: "registry646.azurecr.io"
+      - key: "ACR_PASS"
+        value: "8v3aODOAK9bwqEH6nyBa9=ZqrAyQYheZ"
+      - key: "ACR_UID"
+        value: "Registry646"
+      - key: "DATASOURCE_PASSWORD"
+        value: "p@ssw0rd"
+      - key: "DATASOURCE_URL"
+        value: "jdbc:postgresql://postgres-base.postgres.database.azure.com:5432/teachua"
+      - key: "DATASOURCE_USER"
+        value: "demo3"
+      - key: "JWT_SECRET"
+        value: "SecretString"
+      - key: "MY_PASSWORD"
+        value: "\"Application is running\""
+      - key: "SUBSCRIPTION_ID"
+        value: "c1f655d1-f2ec-43ff-8d1c-56e2a8563483"
+      - key: "VMIP"
+        value: "52.170.24.41"
+  
+security:
+  queueItemAuthenticator:
+    authenticators:
+      - global:
+          strategy: triggeringUsersAuthorizationStrategy
+
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - basicSSHUserPrivateKey:
+              scope: GLOBAL
+              id: ssh
+              username: azureuser
+              description: "SSH passphrase with private key file. Private key provided"
+              privateKeySource:
+                directEntry:
+                  privateKey: "${readFile:${SSH_PRIVATE_FILE_PATH}}"
+
+unclassified:
+  location:
+    url: "${JENKINS_RESERVE_URL}"
+  
+  throttleJobProperty:
+    categories:
+    - categoryName: "Lock"
+      maxConcurrentPerNode: 1
+      maxConcurrentTotal: 1

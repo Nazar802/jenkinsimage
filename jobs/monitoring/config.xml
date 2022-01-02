@@ -1,0 +1,45 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@1145.v7f2433caa07f">
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.throttleconcurrents.ThrottleJobProperty plugin="throttle-concurrents@2.6">
+      <maxConcurrentPerNode>0</maxConcurrentPerNode>
+      <maxConcurrentTotal>0</maxConcurrentTotal>
+      <categories class="java.util.concurrent.CopyOnWriteArrayList"/>
+      <throttleEnabled>false</throttleEnabled>
+      <throttleOption>project</throttleOption>
+      <limitOneJobWithMatchingParams>false</limitOneJobWithMatchingParams>
+      <paramsToUseForLimit></paramsToUseForLimit>
+    </hudson.plugins.throttleconcurrents.ThrottleJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2648.va9433432b33c">
+    <script>node {
+    def remote = [:]
+    
+    withCredentials([sshUserPrivateKey(credentialsId: &apos;ssh&apos;, keyFileVariable: &apos;file&apos;, passphraseVariable: &apos;pass&apos;, usernameVariable: &apos;user&apos;)]) {
+        remote.identityFile = file
+        remote.name = &apos;backend&apos;
+        remote.host = &quot;${VMIP}&quot;
+        remote.user = &apos;azureuser&apos;
+        remote.allowAnyHosts = true
+        
+        stage (&apos;Install&apos;) {
+            writeFile file: &apos;start.sh&apos;, text:
+            &quot;kubectl create namespace monitoring || true\nhelm upgrade --install prometheus --namespace monitoring stable/prometheus-operator --values values.yml || true&quot;
+            sshScript remote: remote, script: &quot;start.sh&quot;
+        }
+        
+        stage (&apos;Start monitoring&apos;) {
+            writeFile file: &apos;start.sh&apos;, text:
+            &quot;pkill kubectl\nkubectl port-forward --address 0.0.0.0 deploy/prometheus-grafana --namespace=monitoring 3000&quot;
+            sshScript remote: remote, script: &quot;start.sh&quot;
+        }
+    }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>
