@@ -1,3 +1,4 @@
+cd ~/auto
 cp ~/secret/key.pem .
 docker build . -t registry646.azurecr.io/jenkins:latest
 docker run -d -p 8282:8080 --name JenkinsTest \
