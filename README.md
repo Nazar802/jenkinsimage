@@ -1,6 +1,6 @@
 # A simple IaC project for MS Azure.
 1. Takes the secret file from local machine.
-2. Builds an image with default admin user, preinstalled plugins and predefined jobs
+2. Builds an image with default admin user, preinstalled plugins and predefined jobs.
 3. Pastes in environment variables and runs it.
 4. Once container is running, it will deploy the infrasctructure consisting of K8S cluster with an app (in this case it's some old version of TeachUA) and an ingress.
 5. Other jobs will be also available:
