@@ -41,6 +41,8 @@ jenkins:
         value: "${TELEGRAM_TOKEN}"
       - key: "CHAT_ID"
         value: "${CHAT_ID}"
+      - key: "SONAR_TOKEN"
+        value: "$SONAR_TOKEN"
   
 security:
   queueItemAuthenticator:
@@ -70,6 +72,11 @@ credentials:
               id: telegramToken
               description: "telegramToken"
               secret: "${TELEGRAM_TOKEN}"
+          - string:
+              scope: GLOBAL
+              id: sonar
+              description: "sonar"
+              secret: "${SONAR_TOKEN}"
 
 unclassified:
   location:
@@ -86,3 +93,13 @@ unclassified:
     - categoryName: "Lock"
       maxConcurrentPerNode: 1
       maxConcurrentTotal: 1
+
+  sonarGlobalConfiguration:
+    buildWrapperEnabled: true
+    installations:
+    - credentialsId: "sonar"
+      name: "SonarQube"
+      serverUrl: "${SONAR_SERVER}"
+      triggers:
+        skipScmCause: false
+        skipUpstreamCause: false

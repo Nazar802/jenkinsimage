@@ -50,10 +50,23 @@
                 }
                 
                 stage (&apos;Mvn Package&apos;) {
-                    writeFile file: &apos;package.sh&apos;, text: 
-                    &quot;cd ~/teachbackimage\nmvn package&quot;
-                    sshScript remote: remote, script: &quot;package.sh&quot;
+                    withSonarQubeEnv (&apos;SonarQube&apos;) {
+                        writeFile file: &apos;package.sh&apos;, text: 
+                        &quot;cd ~/teachbackimage\nmvn package sonar:sonar&quot;
+                        sshScript remote: remote, script: &quot;package.sh&quot;
+                    }
                 }
+                
+                stage(&quot;Quality Gate&quot;){
+                    timeout(time: 1, unit: &apos;HOURS&apos;) {
+                        def qg = waitForQualityGate()
+                            if (qg.status != &apos;OK&apos;) {
+                                sh  (&quot;&quot;&quot;
+                                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&apos;Fucking slaves! Rewrite the code. Quality gate for backend failed&apos;
+                                &quot;&quot;&quot;)
+                        }
+                    }
+                } 
                 
                 stage (&apos;Docker Build&apos;) {
                     writeFile file: &apos;build.sh&apos;, text: 

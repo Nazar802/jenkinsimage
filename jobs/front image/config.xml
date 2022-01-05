@@ -51,14 +51,33 @@
                 
                 stage (&apos;Npm install&apos;) {
                     writeFile file: &apos;install.sh&apos;, text: 
-                    &quot;cd ~/teachfrontimage\nnpm install&quot;
+                    &quot;cd ~/teachfrontimage\nnpm install -D sonarqube-scanner\nnpm install&quot;
                     sshScript remote: remote, script: &quot;install.sh&quot;
                 }
                 
                 stage (&apos;Npm build&apos;) {
                     writeFile file: &apos;npmbuild.sh&apos;, text: 
-                    &quot;cd ~/teachfrontimage\nnpm run build\ncd build\nmkdir dev\nmv static dev&quot;
+                    &quot;cd ~/teachfrontimage\nnpm run build\nsonar-scanner\ncd build\nmkdir dev\nmv static dev&quot;
                     sshScript remote: remote, script: &quot;npmbuild.sh&quot;
+                }
+                
+                stage (&apos;Sonar Scan&apos;) {
+                    withSonarQubeEnv (&apos;SonarQube&apos;) {
+                        writeFile file: &apos;scan.sh&apos;, text: 
+                        &quot;cd ~/teachfrontimage\n/opt/sonar-scanner/bin/sonar-scanner -Dsonar.projectKey=frontend -Dsonar.sources=. -Dsonar.projectName=frontend&quot;
+                        sshScript remote: remote, script: &quot;scan.sh&quot;
+                    }
+                }
+                
+                stage(&quot;Quality Gate&quot;){
+                    timeout(time: 1, unit: &apos;HOURS&apos;) {
+                        def qg = waitForQualityGate()
+                            if (qg.status != &apos;OK&apos;) {
+                                sh  (&quot;&quot;&quot;
+                                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&apos;Fucking slaves! Rewrite the code. Quality gate for frontend failed&apos;
+                                &quot;&quot;&quot;)
+                        }
+                    }
                 }
                 
                 stage (&apos;Docker Build&apos;) {
