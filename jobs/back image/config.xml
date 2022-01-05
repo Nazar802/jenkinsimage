@@ -70,14 +70,14 @@
             }
             withCredentials([string(credentialsId: &apos;chatID&apos;, variable: &apos;notif&apos;)]) {
                 sh  (&quot;&quot;&quot;
-                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&apos;Oh Yeah! Kubernetes job succeeded&apos;
+                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&apos;Oh Yeah! Back Image job succeeded&apos;
                 &quot;&quot;&quot;)
             }
         }
         catch (e) {
             withCredentials([string(credentialsId: &apos;chatID&apos;, variable: &apos;notif&apos;)]) {
                 sh  (&quot;&quot;&quot;
-                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&quot;Fuck You! Kubernetes job failed&quot;
+                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&quot;Fuck You! Back Image job failed&quot;
                 &quot;&quot;&quot;)
             }
             throw e
