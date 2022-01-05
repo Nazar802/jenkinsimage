@@ -74,3 +74,4 @@ throttle-concurrents
 startup-trigger-plugin
 telegram-notifications
 sonar
+nodejs
