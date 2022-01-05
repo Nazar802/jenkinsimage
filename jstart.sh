@@ -4,7 +4,7 @@ cd ~/auto
 cp ~/secret/key.pem .
 docker build . -t registry646.azurecr.io/jenkins:latest
 docker run -d -p 8282:8080 --name JenkinsTest \
-	-v /var/run/docker.sock:/var/run/docker.sock
+	-v /var/run/docker.sock:/var/run/docker.sock \
 	--env JENKINS_ADMIN_ID="${JENKINS_ADMIN_ID}" \
 	--env JENKINS_ADMIN_PASSWORD="${JENKINS_ADMIN_PASSWORD}" \
 	--env JENKINS_RESERVE_URL="${JENKINS_RESERVE_URL}" \
