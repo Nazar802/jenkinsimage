@@ -1,3 +1,4 @@
+docker rm -f JenkinsTest || true
 cd ~/auto
 cp ~/secret/key.pem .
 docker build . -t registry646.azurecr.io/jenkins:latest
