@@ -42,7 +42,7 @@ jenkins:
       - key: "CHAT_ID"
         value: "${CHAT_ID}"
       - key: "SONAR_TOKEN"
-        value: "$SONAR_TOKEN"
+        value: "${SONAR_TOKEN}"
   
 security:
   queueItemAuthenticator:
