@@ -106,42 +106,41 @@ unclassified:
         skipScmCause: false
         skipUpstreamCause: false
 
-  tool:
-
-    dockerTool:
-      installations:
-      - name: "Docker"
-        properties:
-        - installSource:
-            installers:
-            - fromDocker:
-                version: "latest"
+tool:
+  dockerTool:
+    installations:
+    - name: "Docker"
+      properties:
+      - installSource:
+          installers:
+          - fromDocker:
+              version: "latest"
    
-    maven:
-      installations:
-      - name: "Maven"
-        properties:
-        - installSource:
-            installers:
-            - maven:
-                id: "3.8.4"
+  maven:
+    installations:
+    - name: "Maven"
+      properties:
+      - installSource:
+          installers:
+          - maven:
+              id: "3.8.4"
 
-    nodejs:
-      installations:
-      - name: "NodeJS"
-        properties:
-        - installSource:
-            installers:
-            - nodeJSInstaller:
-                id: "12.22.8"
-                npmPackages: "sonar-scanner"
-                npmPackagesRefreshHours: 72
+  nodejs:
+    installations:
+    - name: "NodeJS"
+      properties:
+      - installSource:
+          installers:
+          - nodeJSInstaller:
+              id: "12.22.8"
+              npmPackages: "sonar-scanner"
+              npmPackagesRefreshHours: 72
 
-    sonarRunnerInstallation:
-      installations:
-      - name: "SonarQube"
-        properties:
-        - installSource:
-            installers:
-            - sonarRunnerInstaller:
-                id: "4.6.2.2472"
+  sonarRunnerInstallation:
+    installations:
+    - name: "SonarQube"
+      properties:
+      - installSource:
+          installers:
+          - sonarRunnerInstaller:
+              id: "4.6.2.2472"
