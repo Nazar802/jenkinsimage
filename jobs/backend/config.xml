@@ -38,32 +38,47 @@
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2648.va9433432b33c">
     <script>throttle([&apos;Lock&apos;]) {
     node {
-        def remote = [:]
+        try {
+            def remote = [:]
+            
+            withCredentials([sshUserPrivateKey(credentialsId: &apos;ssh&apos;, keyFileVariable: &apos;file&apos;, passphraseVariable: &apos;pass&apos;, usernameVariable: &apos;user&apos;)]) {
+                remote.identityFile = file
+                remote.name = &apos;backend&apos;
+                remote.host = &quot;${VMIP}&quot;
+                remote.user = &apos;azureuser&apos;
+                remote.allowAnyHosts = true    
+                
+                stage (&apos;Cleanup&apos;) {
+                    writeFile file: &apos;cleanup.sh&apos;, text:
+                    &quot;rm -rf teachback\nkubectl delete deploy backend-deployment || true\nkubectl delete svc teachua || true&quot;
+                    sshScript remote: remote, script: &quot;cleanup.sh&quot;
+                }
         
-        withCredentials([sshUserPrivateKey(credentialsId: &apos;ssh&apos;, keyFileVariable: &apos;file&apos;, passphraseVariable: &apos;pass&apos;, usernameVariable: &apos;user&apos;)]) {
-            remote.identityFile = file
-            remote.name = &apos;backend&apos;
-            remote.host = &quot;${VMIP}&quot;
-            remote.user = &apos;azureuser&apos;
-            remote.allowAnyHosts = true    
-            
-            stage (&apos;Cleanup&apos;) {
-                writeFile file: &apos;cleanup.sh&apos;, text:
-                &quot;rm -rf teachback\nkubectl delete deploy backend-deployment || true\nkubectl delete svc teachua || true&quot;
-                sshScript remote: remote, script: &quot;cleanup.sh&quot;
+                stage (&apos;Scm checkout&apos;) {
+                    git branch: &apos;backend&apos;, url: &apos;https://github.com/Nazar802/demo3.git&apos;
+                    sshCommand remote: remote, command: &quot;cd ~ &amp;&amp; git clone --branch backend https://github.com/Nazar802/demo3.git teachback&quot;
+                }
+                
+                stage (&apos;Kubectl apply&apos;) {
+                    writeFile file: &apos;start.sh&apos;, text:
+                    &quot;kubectl apply -f ~/backend/back-secret.yaml\nkubectl apply -f ~/teachback/back.yaml&quot;
+                    sshScript remote: remote, script: &quot;start.sh&quot;
+                }
+                
             }
-    
-            stage (&apos;Scm checkout&apos;) {
-                git branch: &apos;backend&apos;, url: &apos;https://github.com/Nazar802/demo3.git&apos;
-                sshCommand remote: remote, command: &quot;cd ~ &amp;&amp; git clone --branch backend https://github.com/Nazar802/demo3.git teachback&quot;
+            withCredentials([string(credentialsId: &apos;chatID&apos;, variable: &apos;notif&apos;)]) {
+                sh  (&quot;&quot;&quot;
+                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&apos;Oh Yeah! Backend job succeeded&apos;
+                &quot;&quot;&quot;)
             }
-            
-            stage (&apos;Kubectl apply&apos;) {
-                writeFile file: &apos;start.sh&apos;, text:
-                &quot;kubectl apply -f ~/backend/back-secret.yaml\nkubectl apply -f ~/teachback/back.yaml&quot;
-                sshScript remote: remote, script: &quot;start.sh&quot;
+        }
+        catch (e) {
+            withCredentials([string(credentialsId: &apos;chatID&apos;, variable: &apos;notif&apos;)]) {
+                sh  (&quot;&quot;&quot;
+                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&quot;Fuck You! Backend job failed&quot;
+                &quot;&quot;&quot;)
             }
-            
+            throw e
         }
     }
 }</script>

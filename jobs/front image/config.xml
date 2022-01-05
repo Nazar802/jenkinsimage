@@ -28,50 +28,64 @@
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2648.va9433432b33c">
     <script>throttle([&apos;Lock&apos;]) {
     node {
-        def remote = [:]
-        
-        withCredentials([sshUserPrivateKey(credentialsId: &apos;ssh&apos;, keyFileVariable: &apos;file&apos;, passphraseVariable: &apos;pass&apos;, usernameVariable: &apos;user&apos;)]) {
-            remote.identityFile = file
-            remote.name = &apos;frontend&apos;
-            remote.host = &quot;${VMIP}&quot;
-            remote.user = &apos;azureuser&apos;
-            remote.allowAnyHosts = true    
+        try {
+            def remote = [:]
             
-            stage (&apos;Cleanup&apos;) {
-                writeFile file: &apos;cleanup.sh&apos;, text:
-                &quot;rm -rf teachfrontimage&quot;
-                sshScript remote: remote, script: &quot;cleanup.sh&quot;
-            }
-            
-            stage (&apos;Scm checkout&apos;) {
-                git branch: &apos;frontImage&apos;, url: &apos;https://github.com/Nazar802/demo3.git&apos;
-                sshCommand remote: remote, command: &quot;git clone --branch frontImage https://github.com/Nazar802/demo3.git teachfrontimage&quot;
-            }
-            
-            stage (&apos;Npm install&apos;) {
-                writeFile file: &apos;install.sh&apos;, text: 
-                &quot;cd ~/teachfrontimage\nnpm install&quot;
-                sshScript remote: remote, script: &quot;install.sh&quot;
-            }
-            
-            stage (&apos;Npm build&apos;) {
-                writeFile file: &apos;npmbuild.sh&apos;, text: 
-                &quot;cd ~/teachfrontimage\nnpm run build\ncd build\nmkdir dev\nmv static dev&quot;
-                sshScript remote: remote, script: &quot;npmbuild.sh&quot;
-            }
-            
-            stage (&apos;Docker Build&apos;) {
-                writeFile file: &apos;build.sh&apos;, text: 
-                &quot;cd ~/teachfrontimage\ndocker build . -t ${ACR_ADDR}/frontend:latest&quot;
-                sshScript remote: remote, script: &quot;build.sh&quot;
-            }
+            withCredentials([sshUserPrivateKey(credentialsId: &apos;ssh&apos;, keyFileVariable: &apos;file&apos;, passphraseVariable: &apos;pass&apos;, usernameVariable: &apos;user&apos;)]) {
+                remote.identityFile = file
+                remote.name = &apos;frontend&apos;
+                remote.host = &quot;${VMIP}&quot;
+                remote.user = &apos;azureuser&apos;
+                remote.allowAnyHosts = true    
                 
-            stage (&apos;Docker Push&apos;) {
-                writeFile file: &apos;push.sh&apos;, text:
-                &quot;docker push ${ACR_ADDR}/frontend:latest&quot;
-                sshScript remote: remote, script: &quot;push.sh&quot;
+                stage (&apos;Cleanup&apos;) {
+                    writeFile file: &apos;cleanup.sh&apos;, text:
+                    &quot;rm -rf teachfrontimage&quot;
+                    sshScript remote: remote, script: &quot;cleanup.sh&quot;
+                }
+                
+                stage (&apos;Scm checkout&apos;) {
+                    git branch: &apos;frontImage&apos;, url: &apos;https://github.com/Nazar802/demo3.git&apos;
+                    sshCommand remote: remote, command: &quot;git clone --branch frontImage https://github.com/Nazar802/demo3.git teachfrontimage&quot;
+                }
+                
+                stage (&apos;Npm install&apos;) {
+                    writeFile file: &apos;install.sh&apos;, text: 
+                    &quot;cd ~/teachfrontimage\nnpm install&quot;
+                    sshScript remote: remote, script: &quot;install.sh&quot;
+                }
+                
+                stage (&apos;Npm build&apos;) {
+                    writeFile file: &apos;npmbuild.sh&apos;, text: 
+                    &quot;cd ~/teachfrontimage\nnpm run build\ncd build\nmkdir dev\nmv static dev&quot;
+                    sshScript remote: remote, script: &quot;npmbuild.sh&quot;
+                }
+                
+                stage (&apos;Docker Build&apos;) {
+                    writeFile file: &apos;build.sh&apos;, text: 
+                    &quot;cd ~/teachfrontimage\ndocker build . -t ${ACR_ADDR}/frontend:latest&quot;
+                    sshScript remote: remote, script: &quot;build.sh&quot;
+                }
+                    
+                stage (&apos;Docker Push&apos;) {
+                    writeFile file: &apos;push.sh&apos;, text:
+                    &quot;docker push ${ACR_ADDR}/frontend:latest&quot;
+                    sshScript remote: remote, script: &quot;push.sh&quot;
+                }
             }
-    
+            withCredentials([string(credentialsId: &apos;chatID&apos;, variable: &apos;notif&apos;)]) {
+                sh  (&quot;&quot;&quot;
+                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&apos;Oh Yeah! Kubernetes job succeeded&apos;
+                &quot;&quot;&quot;)
+            }
+        }
+        catch (e) {
+            withCredentials([string(credentialsId: &apos;chatID&apos;, variable: &apos;notif&apos;)]) {
+                sh  (&quot;&quot;&quot;
+                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&quot;Fuck You! Kubernetes job failed&quot;
+                &quot;&quot;&quot;)
+            }
+            throw e
         }
     }
 }</script>

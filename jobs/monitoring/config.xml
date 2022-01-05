@@ -16,26 +16,41 @@
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2648.va9433432b33c">
     <script>node {
-    def remote = [:]
-    
-    withCredentials([sshUserPrivateKey(credentialsId: &apos;ssh&apos;, keyFileVariable: &apos;file&apos;, passphraseVariable: &apos;pass&apos;, usernameVariable: &apos;user&apos;)]) {
-        remote.identityFile = file
-        remote.name = &apos;backend&apos;
-        remote.host = &quot;${VMIP}&quot;
-        remote.user = &apos;azureuser&apos;
-        remote.allowAnyHosts = true
+    try {
+        def remote = [:]
         
-        stage (&apos;Install&apos;) {
-            writeFile file: &apos;start.sh&apos;, text:
-            &quot;kubectl create namespace monitoring || true\nhelm upgrade --install prometheus --namespace monitoring stable/prometheus-operator --values values.yml || true&quot;
-            sshScript remote: remote, script: &quot;start.sh&quot;
+        withCredentials([sshUserPrivateKey(credentialsId: &apos;ssh&apos;, keyFileVariable: &apos;file&apos;, passphraseVariable: &apos;pass&apos;, usernameVariable: &apos;user&apos;)]) {
+            remote.identityFile = file
+            remote.name = &apos;backend&apos;
+            remote.host = &quot;${VMIP}&quot;
+            remote.user = &apos;azureuser&apos;
+            remote.allowAnyHosts = true
+            
+            stage (&apos;Install&apos;) {
+                writeFile file: &apos;start.sh&apos;, text:
+                &quot;kubectl create namespace monitoring || true\nhelm upgrade --install prometheus --namespace monitoring stable/prometheus-operator --values values.yml || true&quot;
+                sshScript remote: remote, script: &quot;start.sh&quot;
+            }
+            
+            stage (&apos;Start monitoring&apos;) {
+                writeFile file: &apos;start.sh&apos;, text:
+                &quot;pkill kubectl\nkubectl port-forward --address 0.0.0.0 deploy/prometheus-grafana --namespace=monitoring 3000&quot;
+                sshScript remote: remote, script: &quot;start.sh&quot;
+            }
         }
-        
-        stage (&apos;Start monitoring&apos;) {
-            writeFile file: &apos;start.sh&apos;, text:
-            &quot;pkill kubectl\nkubectl port-forward --address 0.0.0.0 deploy/prometheus-grafana --namespace=monitoring 3000&quot;
-            sshScript remote: remote, script: &quot;start.sh&quot;
+        withCredentials([string(credentialsId: &apos;chatID&apos;, variable: &apos;notif&apos;)]) {
+            sh  (&quot;&quot;&quot;
+            curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&apos;Oh Yeah! Kubernetes job succeeded&apos;
+            &quot;&quot;&quot;)
         }
+    }
+    catch (e) {
+        withCredentials([string(credentialsId: &apos;chatID&apos;, variable: &apos;notif&apos;)]) {
+            sh  (&quot;&quot;&quot;
+            curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&quot;Fuck You! Kubernetes job failed&quot;
+            &quot;&quot;&quot;)
+        }
+        throw e
     }
 }</script>
     <sandbox>true</sandbox>
