@@ -37,6 +37,10 @@ jenkins:
         value: "${SUBSCRIPTION_ID}"
       - key: "VMIP"
         value: "${VMIP}"
+      - key: "TELEGRAM_TOKEN"
+        value: "${TELEGRAM_TOKEN}"
+      - key: "CHAT_ID"
+        value: "${CHAT_ID}"
   
 security:
   queueItemAuthenticator:
@@ -56,10 +60,26 @@ credentials:
               privateKeySource:
                 directEntry:
                   privateKey: "${readFile:${SSH_PRIVATE_FILE_PATH}}"
+           - string:
+               scope: GLOBAL
+               id: chatID
+               description: "chatID"
+               secret: "${CHAT_ID}"
+           - string:
+               scope: GLOBAL
+               id: telegramToken
+               description: "telegramToken"
+               secret: "${TELEGRAM_TOKEN}"
 
 unclassified:
   location:
     url: "${JENKINS_RESERVE_URL}"
+  
+  telegramBotGlobalConfiguration:
+    approvalType: MANUAL
+    botName: "JenkinsNotify"
+    botToken: "${TELEGRAM_TOKEN}"
+    shouldLogToConsole: false
   
   throttleJobProperty:
     categories:
