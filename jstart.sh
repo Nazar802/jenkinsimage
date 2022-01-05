@@ -16,4 +16,6 @@ docker run -d -p 8282:8080 --name JenkinsTest \
 	--env SUBSCRIPTION_ID="${SUBSCRIPTION_ID}" \
 	--env VMIP="${VMIP}" \
 	--env SSH_PRIVATE_FILE_PATH="${SSH_PRIVATE_FILE_PATH}" \
+	--env CHAT_ID="${CHAT_ID}" \
+	--env TELEGRAM_TOKEN="${TELEGRAM_TOKEN}" \
 	registry646.azurecr.io/jenkins:latest
