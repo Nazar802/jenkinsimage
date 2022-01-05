@@ -60,16 +60,16 @@ credentials:
               privateKeySource:
                 directEntry:
                   privateKey: "${readFile:${SSH_PRIVATE_FILE_PATH}}"
-           - string:
-               scope: GLOBAL
-               id: chatID
-               description: "chatID"
-               secret: "${CHAT_ID}"
-           - string:
-               scope: GLOBAL
-               id: telegramToken
-               description: "telegramToken"
-               secret: "${TELEGRAM_TOKEN}"
+          - string:
+              scope: GLOBAL
+              id: chatID
+              description: "chatID"
+              secret: "${CHAT_ID}"
+          - string:
+              scope: GLOBAL
+              id: telegramToken
+              description: "telegramToken"
+              secret: "${TELEGRAM_TOKEN}"
 
 unclassified:
   location:
