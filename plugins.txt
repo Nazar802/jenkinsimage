@@ -72,3 +72,4 @@ configuration-as-code
 command-launcher
 throttle-concurrents
 startup-trigger-plugin
+telegram-notifications
