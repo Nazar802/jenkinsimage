@@ -25,3 +25,7 @@ Environment variables:
   <pre>- SUBSCRIPTION_ID                 Your Azure subscription ID</pre>
   <pre>- VMIP                            Azure VM ip-address</pre>
   <pre>- SSH_PRIVATE_FILE_PATH           Path to ssh key on docker container (NOT VM)</pre>
+  <pre>- SONAR_SERVER                    SonarQube Server ip address</pre>
+  <pre>- SONAR_TOKEN                     Token to access your SonarQube Server</pre>
+  <pre>- TELEGRAM_TOKEN                  Token for telegram notification bot</pre>
+  <pre>- CHAT_ID                         Telegram notification channel id</pre>
