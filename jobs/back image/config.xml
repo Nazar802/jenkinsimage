@@ -59,7 +59,7 @@
             }
                 
             stage (&apos;Docker Push&apos;) {
-                def dockerHome = tool name: &apos;docker_inst&apos;, type: &apos;dockerTool&apos;
+                def dockerHome = tool name: &apos;Docker&apos;, type: &apos;dockerTool&apos;
                 def dockerCMD = &quot;${dockerHome}/bin/docker&quot;
                 sh &quot;${dockerCMD} login ${ACR_ADDR} -u${ACR_UID} -p${ACR_PASS}&quot;
                 sh &quot;${dockerCMD} push ${ACR_ADDR}/backend:latest&quot;
