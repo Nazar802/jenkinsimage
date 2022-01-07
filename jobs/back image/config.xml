@@ -48,6 +48,7 @@
                             sh  (&quot;&quot;&quot;
                             curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&apos;Fucking slaves! Rewrite the code. Quality gate for backend failed&apos;
                             &quot;&quot;&quot;)
+                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
                     }
                 }
             } 
