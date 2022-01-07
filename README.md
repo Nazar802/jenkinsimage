@@ -29,3 +29,6 @@ Environment variables:
   <pre>- SONAR_TOKEN                     Token to access your SonarQube Server</pre>
   <pre>- TELEGRAM_TOKEN                  Token for telegram notification bot</pre>
   <pre>- CHAT_ID                         Telegram notification channel id</pre>
+  <pre>- NEXUS_SERVER                    Nexus ip-address</pre>
+  <pre>- NEXUS_USER                      Nexus user</pre>
+  <pre>- NEXUS_PASSWORD                  Password to access Nexus</pre>
