@@ -61,7 +61,7 @@
                             sh  (&quot;&quot;&quot;
                             curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&apos;Fucking slaves! Rewrite the code. Quality gate for backend failed&apos;
                             &quot;&quot;&quot;)
-                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                            error &quot;Pipeline aborted due to quality gate failure: ${qg.status}&quot;
                     }
                 }
             } 
@@ -69,14 +69,14 @@
             stage (&apos;Docker Build&apos;) {
                 def dockerHome = tool name: &apos;Docker&apos;, type: &apos;dockerTool&apos;
                 def dockerCMD = &quot;${dockerHome}/bin/docker&quot;
-                sh &quot;${dockerCMD} build . -t ${ACR_ADDR}/backend:latest&quot;
+                sh &quot;${dockerCMD} build . -t ${ACR_ADDR}/frontend:latest&quot;
             }
                 
             stage (&apos;Docker Push&apos;) {
                 def dockerHome = tool name: &apos;Docker&apos;, type: &apos;dockerTool&apos;
                 def dockerCMD = &quot;${dockerHome}/bin/docker&quot;
                 sh &quot;${dockerCMD} login ${ACR_ADDR} -u${ACR_UID} -p${ACR_PASS}&quot;
-                sh &quot;${dockerCMD} push ${ACR_ADDR}/backend:latest&quot;
+                sh &quot;${dockerCMD} push ${ACR_ADDR}/frontend:latest&quot;
             }
             withCredentials([string(credentialsId: &apos;chatID&apos;, variable: &apos;notif&apos;)]) {
                 sh  (&quot;&quot;&quot;

@@ -23,4 +23,7 @@ docker run -d -p 8282:8080 --name JenkinsTest \
 	--env TELEGRAM_TOKEN="${TELEGRAM_TOKEN}" \
 	--env SONAR_TOKEN="${SONAR_TOKEN}" \
 	--env SONAR_SERVER="${SONAR_SERVER}" \
+	--env NEXUS_SERVER="${NEXUS_SERVER}" \
+	--env NEXUS_USER="${NEXUS_USER}" \
+	--env NEXUS_PASSWORD="${NEXUS_PASSWORD}" \
 	registry646.azurecr.io/jenkins:latest

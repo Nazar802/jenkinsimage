@@ -45,12 +45,17 @@ jenkins:
         value: "${SONAR_TOKEN}"
       - key: "CI"
         value: "false"
+      - key: "NEXUS_SERVER"
+        value: "${NEXUS_SERVER}"
   
 security:
   queueItemAuthenticator:
     authenticators:
       - global:
           strategy: triggeringUsersAuthorizationStrategy
+  scriptApproval:
+    approvedSignatures:
+    - "method org.apache.maven.model.Model getVersion"
 
 credentials:
   system:
@@ -79,6 +84,13 @@ credentials:
               id: sonar
               description: "sonar"
               secret: "${SONAR_TOKEN}"
+          - usernamePassword:
+              scope: GLOBAL
+              id: nexus
+              description: "nexus"
+              username: "${NEXUS_USER}"
+              password: "${NEXUS_PASSWORD}"
+
 
 unclassified:
   location:

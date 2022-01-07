@@ -75,3 +75,5 @@ startup-trigger-plugin
 telegram-notifications
 sonar
 nodejs
+pipeline-utility-steps
+nexus-artifact-uploader
