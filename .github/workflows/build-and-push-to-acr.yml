@@ -25,7 +25,7 @@ jobs:
             port: ${{ secrets.PORT }}
             script: |
               rm -rf auto
-              git clone https://$GITHUB_USER:$GITHUB_TOKEN@github.com/Nazar802/jenkinsimage.git auto
+              git clone https://${{ secrets.USER }}:${{ secrets.TOKEN }}@github.com/Nazar802/jenkinsimage.git auto
               cd auto
               cp /home/azureuser/secret/key.pem ~/auto/key.pem
               docker login ${{ secrets.REGISTRY_LOGIN_SERVER }} -u${{ secrets.REGISTRY_USERNAME }} -p${{ secrets.REGISTRY_PASSWORD }}
