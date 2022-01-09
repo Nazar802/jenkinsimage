@@ -32,3 +32,6 @@ Environment variables:
   <pre>- NEXUS_SERVER                    Nexus ip-address</pre>
   <pre>- NEXUS_USER                      Nexus user</pre>
   <pre>- NEXUS_PASSWORD                  Password to access Nexus</pre>
+  
+  
+  **Github actions will be disabled for safety reasons after this repository is public.**
