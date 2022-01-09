@@ -96,6 +96,9 @@ unclassified:
   location:
     url: "${JENKINS_RESERVE_URL}"
   
+  gitHubPluginConfig:
+    hookUrl: "${JENKINS_RESERVE_URL}/github-webhook/"
+  
   telegramBotGlobalConfiguration:
     approvalType: MANUAL
     botName: "JenkinsNotify"
