@@ -17,7 +17,6 @@ jobs:
         
         # execute remote commands
         - name: 'Remote SSH'
-          uses: ./
           with:
             host: ${{ secrets.HOST }}
             username: ${{ secrets.USERNAME }}
@@ -27,7 +26,7 @@ jobs:
               rm -rf auto
               git clone https://$GITHUB_USER:$GITHUB_TOKEN@github.com/Nazar802/jenkinsimage.git auto
               cd auto
-              cp ~/secret/key.pem ~/auto/key.pem
+              cp /home/azureuser/secret/key.pem ~/auto/key.pem
               docker login ${{ secrets.REGISTRY_LOGIN_SERVER }} -u${{ secrets.REGISTRY_USERNAME }} -p${{ secrets.REGISTRY_PASSWORD }}
               docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:latest
               docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:latest
