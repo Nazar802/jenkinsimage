@@ -17,6 +17,7 @@ jobs:
         
         # execute remote commands
         - name: 'Remote SSH'
+          uses: ./
           with:
             host: ${{ secrets.HOST }}
             username: ${{ secrets.USERNAME }}
