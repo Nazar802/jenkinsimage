@@ -43,7 +43,6 @@
             
             stage (&apos;Npm build&apos;) {
                 sh &quot;npm run build&quot;
-                sh &quot;cd build\nmkdir dev\nmv static dev&quot;
             }
             
             withSonarQubeEnv (&apos;SonarQube&apos;) {
