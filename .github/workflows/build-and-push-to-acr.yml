@@ -14,7 +14,8 @@ jobs:
         # checkout the repo
         - name: 'Checkout GitHub Action'
           uses: actions/checkout@main
-
+        
+        # execute remote commands
         - name: 'Remote SSH'
           uses: ./
           with:
