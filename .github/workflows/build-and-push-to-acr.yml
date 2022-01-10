@@ -25,15 +25,14 @@ jobs:
             port: ${{ secrets.PORT }}
             script: |
               rm -rf auto
-              git clone https://$GITHUB_USER:$GITHUB_TOKEN@github.com/Nazar802/jenkinsimage.git auto
+              git clone https://${{ secrets.USER }}:${{ secrets.TOKEN }}@github.com/Nazar802/jenkinsimage.git auto
               cd auto
               cp ~/secret/key.pem ~/auto/key.pem
               docker login ${{ secrets.REGISTRY_LOGIN_SERVER }} -u${{ secrets.REGISTRY_USERNAME }} -p${{ secrets.REGISTRY_PASSWORD }}
-              docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:latest
-              docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:latest
+              docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:actions
+              docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:actions
               docker rm -f JenkinsTest
               docker login ${{ secrets.REGISTRY_LOGIN_SERVER }} -u${{ secrets.REGISTRY_USERNAME }} -p${{ secrets.REGISTRY_PASSWORD }}
-              docker pull ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:actions
               docker run -d -p 8282:8080 --name JenkinsTest \
               -v /var/run/docker.sock:/var/run/docker.sock \
               --env JENKINS_ADMIN_ID="${{ secrets.JENKINS_ADMIN_ID }}" \
