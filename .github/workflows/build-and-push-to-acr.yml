@@ -15,21 +15,21 @@ jobs:
         - name: 'Checkout GitHub Action'
           uses: actions/checkout@main
         
-        # - name: 'Create secret file'
-        #   uses: "finnp/create-file-action@master"
-        #   env:
-        #     FILE_NAME: "key.pem"
-        #     FILE_DATA: ${{ secrets.KEY }}
+        - name: 'Create secret file'
+          run: |
+            touch key.pem
+            echo ${{ secrets.KEY }} >> key.pem
+          shell: bash
 
-        # - name: 'Build and push image'
-        #   uses: azure/docker-login@v1
-        #   with:
-        #     login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-        #     username: ${{ secrets.REGISTRY_USERNAME }}
-        #     password: ${{ secrets.REGISTRY_PASSWORD }}
-        # - run: |
-        #     docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:actions
-        #     docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:actions 
+        - name: 'Build and push image'
+          uses: azure/docker-login@v1
+          with:
+            login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+            username: ${{ secrets.REGISTRY_USERNAME }}
+            password: ${{ secrets.REGISTRY_PASSWORD }}
+        - run: |
+            docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:actions
+            docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:actions 
 
         # execute remote commands
         - name: 'Deploy Container to Azure VM'
@@ -58,7 +58,7 @@ jobs:
               --env MY_PASSWORD="${{ secrets.MY_PASSWORD }}" \
               --env SUBSCRIPTION_ID="${{ secrets.SUBSCRIPTION_ID }}" \
               --env VMIP="${{ secrets.HOST }}" \
-              --env SSH_PRIVATE_FILE_PATH="${{ secrets.SSH_PRIVATE_FILE_PATH }}" \
+              --env SSH_PRIVA2TE_FILE_PATH="${{ secrets.SSH_PRIVATE_FILE_PATH }}" \
               --env CHAT_ID="${{ secrets.CHAT_ID }}" \
               --env TELEGRAM_TOKEN="${{ secrets.TELEGRAM_TOKEN }}" \
               --env SONAR_TOKEN="${{ secrets.SONAR_TOKEN }}" \
