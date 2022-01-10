@@ -19,7 +19,7 @@ jobs:
           uses: dawidd6/action-ansible-playbook@v2
           with:
             playbook: jenkins.yaml
-            directory: /
+            #directory: ~/auto
             key: ${{ secrets.KEY }}
 
 
