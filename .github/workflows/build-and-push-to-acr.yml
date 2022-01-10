@@ -16,7 +16,7 @@ jobs:
           uses: actions/checkout@main
         
         # execute remote commands
-        - name: 'Remote shell'
+        - name: 'Remote ansible'
           uses: appleboy/ssh-action@master
           with:
             host: ${{ secrets.HOST }}
@@ -24,4 +24,5 @@ jobs:
             key: ${{ secrets.KEY }}
             port: ${{ secrets.PORT }}
             script: |
-              ~/scripts/clone.sh
+              source ~/.bashrc
+              ansible-playbook ~/scripts/jenkins.yaml
