@@ -16,10 +16,10 @@ jobs:
           uses: actions/checkout@main
         
         - name: 'Create secret file'
-          run: |
-            touch key.pem
-            echo ${{ secrets.KEY }} >> key.pem
-            shell: bash
+          uses: "finnp/create-file-action@master"
+          env:
+            FILE_NAME: "key.pem"
+            FILE_DATA: ${{ secrets.KEY }}
 
         - name: 'Build and push image'
           uses: azure/docker-login@v1
