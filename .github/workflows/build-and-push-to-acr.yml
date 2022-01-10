@@ -14,14 +14,15 @@ jobs:
         # checkout the repo
         - name: 'Checkout GitHub Action'
           uses: actions/checkout@main
-
+        
+        # run the playbook
         - name: 'Execute playbook'
           uses: dawidd6/action-ansible-playbook@v2
           with:
             playbook: jenkins.yaml
-            #directory: ~/auto
             key: ${{ secrets.KEY }}
-            
+            inventory: inventory.yaml
+            vault_password: ${{secrets.VAULT_PASSWORD}}
 
 
         
