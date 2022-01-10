@@ -19,6 +19,7 @@ jobs:
           run: |
             touch key.pem
             echo "${{ secrets.KEY }}" >> key.pem
+            sudo chmod 400 key.pem
           shell: bash
 
         - name: 'Build and push image'
