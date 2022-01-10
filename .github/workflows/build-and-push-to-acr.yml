@@ -15,12 +15,12 @@ jobs:
         - name: 'Checkout GitHub Action'
           uses: actions/checkout@main
         
-        - name: 'Create secret file'
-          run: |
-            touch key.pem
-            echo "${{ secrets.KEY }}" >> key.pem
-            sudo chmod 400 key.pem
-          shell: bash
+        # - name: 'Create secret file'
+        #   run: |
+        #     touch key.pem
+        #     echo "${{ secrets.KEY }}" >> key.pem
+        #     sudo chmod 400 key.pem
+        #   shell: bash
 
         - name: 'Build and push image'
           uses: azure/docker-login@v1
