@@ -68,3 +68,4 @@ jobs:
               --env NEXUS_USER="${{ secrets.NEXUS_USER }}" \
               --env NEXUS_PASSWORD="${{ secrets.NEXUS_PASSWORD }}" \
               ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:actions
+              
