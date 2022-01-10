@@ -45,25 +45,25 @@ jobs:
               docker pull ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:actions
               docker run -d -p 8282:8080 --name JenkinsTest \
               -v /var/run/docker.sock:/var/run/docker.sock \
-              --env JENKINS_ADMIN_ID=${{ secrets.JENKINS_ADMIN_ID }} \
-              --env JENKINS_ADMIN_PASSWORD=${{ secrets.JENKINS_ADMIN_PASSWOR }} \
-              --env JENKINS_RESERVE_URL=${{ secrets.JENKINS_RESERVE_URL }} \
-              --env ACR_ADDR=${{ secrets.REGISTRY_LOGIN_SERVER }} \
-              --env ACR_PASS=${{ secrets.REGISTRY_PASSWORD }} \
-              --env ACR_UID=${{ secrets.REGISTRY_USERNAME }} \
-              --env DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }} \
-              --env DATASOURCE_URL=${{ secrets.DATASOURCE_URL }} \
-              --env DATASOURCE_USER=${{ secrets.DATASOURCE_USER }} \
-              --env JWT_SECRET=${{ secrets.JWT_SECRET }} \
-              --env MY_PASSWORD=${{ secrets.MY_PASSWORD }} \
-              --env SUBSCRIPTION_ID=${{ secrets.SUBSCRIPTION_ID }} \
-              --env VMIP= ${{ secrets.HOST }} \
-              --env SSH_PRIVATE_FILE_PATH=${{ secrets.SSH_PRIVATE_FILE_PATH }} \
-              --env CHAT_ID=${{ secrets.CHAT_ID }} \
-              --env TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }} \
-              --env SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} \
-              --env SONAR_SERVER=${{ secrets.SONAR_SERVER }} \
-              --env NEXUS_SERVER=${{ secrets.NEXUS_SERVER }} \
-              --env NEXUS_USER=${{ secrets.NEXUS_USER }} \
-              --env NEXUS_PASSWORD=${{ secrets.NEXUS_PASSWORD }} \
+              --env JENKINS_ADMIN_ID="${{ secrets.JENKINS_ADMIN_ID }}" \
+              --env JENKINS_ADMIN_PASSWORD="${{ secrets.JENKINS_ADMIN_PASSWOR }}" \
+              --env JENKINS_RESERVE_URL="${{ secrets.JENKINS_RESERVE_URL }}" \
+              --env ACR_ADDR="${{ secrets.REGISTRY_LOGIN_SERVER }}" \
+              --env ACR_PASS="${{ secrets.REGISTRY_PASSWORD }}" \
+              --env ACR_UID="${{ secrets.REGISTRY_USERNAME }}" \
+              --env DATASOURCE_PASSWORD="${{ secrets.DATASOURCE_PASSWORD }}" \
+              --env DATASOURCE_URL="${{ secrets.DATASOURCE_URL }}" \
+              --env DATASOURCE_USER="${{ secrets.DATASOURCE_USER }}" \
+              --env JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+              --env MY_PASSWORD="${{ secrets.MY_PASSWORD }}" \
+              --env SUBSCRIPTION_ID="${{ secrets.SUBSCRIPTION_ID }}" \
+              --env VMIP="${{ secrets.HOST }}" \
+              --env SSH_PRIVATE_FILE_PATH="${{ secrets.SSH_PRIVATE_FILE_PATH }}" \
+              --env CHAT_ID="${{ secrets.CHAT_ID }}" \
+              --env TELEGRAM_TOKEN="${{ secrets.TELEGRAM_TOKEN }}" \
+              --env SONAR_TOKEN="${{ secrets.SONAR_TOKEN }}" \
+              --env SONAR_SERVER="${{ secrets.SONAR_SERVER }}" \
+              --env NEXUS_SERVER="${{ secrets.NEXUS_SERVER }}" \
+              --env NEXUS_USER="${{ secrets.NEXUS_USER }}" \
+              --env NEXUS_PASSWORD="${{ secrets.NEXUS_PASSWORD }}" \
               ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:actions
