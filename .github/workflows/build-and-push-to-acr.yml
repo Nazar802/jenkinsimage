@@ -15,19 +15,29 @@ jobs:
         - name: 'Checkout GitHub Action'
           uses: actions/checkout@main
         
-        # execute remote commands
-        - name: 'Remote SSH'
-          uses: appleboy/ssh-action@master
+        - name: 'Execute playbook'
+          uses: dawidd6/action-ansible-playbook@v2
           with:
-            host: ${{ secrets.HOST }}
-            username: ${{ secrets.USERNAME }}
+            playbook: jenkins.yaml
+            directory: ../
             key: ${{ secrets.KEY }}
-            port: ${{ secrets.PORT }}
-            script: |
-              rm -rf auto
-              git clone https://${{ secrets.USER }}:${{ secrets.TOKEN }}@github.com/Nazar802/jenkinsimage.git auto
-              cd auto
-              cp /home/azureuser/secret/key.pem ~/auto/key.pem
-              docker login ${{ secrets.REGISTRY_LOGIN_SERVER }} -u${{ secrets.REGISTRY_USERNAME }} -p${{ secrets.REGISTRY_PASSWORD }}
-              docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:dungeon_edition
-              docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:dungeon_edition
+
+
+
+        
+        # # execute remote commands
+        # - name: 'Remote SSH'
+        #   uses: appleboy/ssh-action@master
+        #   with:
+        #     host: ${{ secrets.HOST }}
+        #     username: ${{ secrets.USERNAME }}
+        #     key: ${{ secrets.KEY }}
+        #     port: ${{ secrets.PORT }}
+        #     script: |
+        #       rm -rf auto
+        #       git clone https://${{ secrets.USER }}:${{ secrets.TOKEN }}@github.com/Nazar802/jenkinsimage.git auto
+        #       cd auto
+        #       cp /home/azureuser/secret/key.pem ~/auto/key.pem
+        #       docker login ${{ secrets.REGISTRY_LOGIN_SERVER }} -u${{ secrets.REGISTRY_USERNAME }} -p${{ secrets.REGISTRY_PASSWORD }}
+        #       docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:dungeon_edition
+        #       docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:dungeon_edition
