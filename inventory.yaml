@@ -1,3 +1,0 @@
-all:
-  hosts:
-    CI ansible_host=52.170.24.41

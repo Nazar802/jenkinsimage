@@ -21,7 +21,7 @@ jobs:
           with:
             playbook: jenkins.yaml
             key: ${{ secrets.KEY }}
-            inventory: inventory.yaml
+            inventory: inventory
             vault_password: ${{secrets.VAULT_PASSWORD}}
 
 
