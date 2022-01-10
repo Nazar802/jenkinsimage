@@ -22,12 +22,14 @@ jobs:
             sudo chmod 400 key.pem
           shell: bash
 
-        - name: 'Build and push image'
+        - name: 'Login to ACR'
           uses: azure/docker-login@v1
           with:
             login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
             username: ${{ secrets.REGISTRY_USERNAME }}
             password: ${{ secrets.REGISTRY_PASSWORD }}
+        
+        - name: 'Build and push image'
           run: |
             docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:actions
             docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:actions 
