@@ -18,7 +18,7 @@ jobs:
         - name: 'Create secret file'
           run: |
             touch key.pem
-            echo ${{ secrets.KEY }} >> key.pem
+            echo "${{ secrets.KEY }}" >> key.pem
           shell: bash
 
         - name: 'Build and push image'
