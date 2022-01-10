@@ -1,8 +1,9 @@
 ---
   - name: Launch Jenkins
-    hosts: CI
+    hosts: "{{ CI }}"
     
     vars:
+      CI: "{{ lookup('env', 'HOST') }}"
       ghUser: "{{ lookup('env', 'GITHUB_USER') }}"
       ghToken: "{{ lookup('env', 'GITHUB_TOKEN') }}"
       acrAddress: "{{ lookup('env', 'ACR_ADDR') }}"

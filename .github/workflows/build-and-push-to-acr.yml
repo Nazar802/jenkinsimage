@@ -14,14 +14,17 @@ jobs:
         # checkout the repo
         - name: 'Checkout GitHub Action'
           uses: actions/checkout@main
-        
+          env:
+            HOST: ${{ secrets.HOST }}
+
+
         - name: 'Execute playbook'
           uses: dawidd6/action-ansible-playbook@v2
           with:
             playbook: jenkins.yaml
             #directory: ~/auto
             key: ${{ secrets.KEY }}
-
+            
 
 
         
