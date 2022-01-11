@@ -15,21 +15,17 @@ jobs:
         - name: 'Checkout GitHub Action'
           uses: actions/checkout@main
         
-        - name: 'Java version'
-          uses: actions/setup-java@v1
-          with:
-            java-version: '11'
+        - name: 'Setup SonarQube'
+          uses: warchant/setup-sonar-scanner@v3
 
-        - name: 'SonarQube Scan'
-          uses: kitabisa/sonarqube-action@v1.1.0
+        - name: Run sonarqube
           env:
-            JAVA_HOME: /usr/lib/jvm/java-11-openjdk
-          with:
-            envs: JAVA_HOME
-            host: ${{ secrets.SONAR_SERVER }}
-            login: ${{ secrets.SONAR_TOKEN }}
-            projectKey: jenkinsCasC
-            projectName: "Jenkins_CasC"
+            GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          run: sonar-scanner
+              -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+              -Dsonar.host.url=${{ secrets.SONAR_SERVER }}
+              -Dsonar.projectKey=jenkins
+              -Dsonar.projectName=Jenkins
 
         - name: 'Create secret file'
           run: |
