@@ -11,6 +11,10 @@ jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
         steps:
+        # setup sonar-scanner
+        - name: Setup sonar scanner
+          uses: warchant/setup-sonar-scanner@v
+        
         # checkout the repo
         - name: 'Checkout GitHub Action'
           uses: actions/checkout@main
