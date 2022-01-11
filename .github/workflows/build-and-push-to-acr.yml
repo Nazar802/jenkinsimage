@@ -35,7 +35,7 @@ jobs:
             docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:actions 
         
         - name: 'Pass environment variables'
-          uses: ./
+          run: echo "ENV"
           env:
             JENKINS_ADMIN_ID: ${{ secrets.JENKINS_ADMIN_ID }}
             JENKINS_ADMIN_PASSWORD: ${{ secrets.JENKINS_ADMIN_PASSWORD }}
