@@ -18,7 +18,7 @@ jobs:
         - name: 'Setup SonarQube'
           uses: warchant/setup-sonar-scanner@v3
 
-        - name: Run sonarqube
+        - name: 'Run sonarqube'
           env:
             GITHUB_TOKEN: ${{ secrets.TOKEN }}
           run: sonar-scanner
