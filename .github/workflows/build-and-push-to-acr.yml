@@ -25,6 +25,7 @@ jobs:
           env:
             JAVA_HOME: /usr/lib/jvm/java-11-openjdk
           with:
+            envs: JAVA_HOME
             host: ${{ secrets.SONAR_SERVER }}
             login: ${{ secrets.SONAR_TOKEN }}
             projectKey: jenkinsCasC
