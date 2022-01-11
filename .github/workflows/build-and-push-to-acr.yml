@@ -15,6 +15,31 @@ jobs:
         - name: 'Checkout GitHub Action'
           uses: actions/checkout@main
         
+        - name: 'Pass environment variables'
+          uses: ./
+          env:
+            JENKINS_ADMIN_ID: ${{ secrets.JENKINS_ADMIN_ID }}
+            JENKINS_ADMIN_PASSWORD: ${{ secrets.JENKINS_ADMIN_PASSWORD }}
+            JENKINS_RESERVE_URL: ${{ secrets.JENKINS_RESERVE_URL }}
+            ACR_ADDR: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+            ACR_PASS: ${{ secrets.REGISTRY_PASSWORD }}
+            ACR_UID: ${{ secrets.REGISTRY_USERNAME }}
+            DATASOURCE_PASSWORD: ${{ secrets.DATASOURCE_PASSWORD }}
+            DATASOURCE_URL: ${{ secrets.DATASOURCE_URL }}
+            DATASOURCE_USER: ${{ secrets.DATASOURCE_USER }}
+            JWT_SECRET: ${{ secrets.JWT_SECRET }}
+            MY_PASSWORD: ${{ secrets.MY_PASSWORD }}
+            SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+            VMIP: ${{ secrets.HOST }}
+            SSH_PRIVATE_FILE_PATH: ${{ secrets.SSH_PRIVATE_FILE_PATH }}
+            CHAT_ID: ${{ secrets.CHAT_ID }}
+            TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            SONAR_SERVER: ${{ secrets.SONAR_SERVER }}
+            NEXUS_SERVER: ${{ secrets.NEXUS_SERVER }}
+            NEXUS_USER: ${{ secrets.NEXUS_USER }}
+            NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+
         - name: 'Create secret file'
           run: |
             touch key.pem
@@ -28,7 +53,7 @@ jobs:
             login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
             username: ${{ secrets.REGISTRY_USERNAME }}
             password: ${{ secrets.REGISTRY_PASSWORD }}
-        
+          
         - name: 'Build and push image'
           run: |
             docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:actions
@@ -42,32 +67,59 @@ jobs:
             username: ${{ secrets.USERNAME }}
             key: ${{ secrets.KEY }}
             port: ${{ secrets.PORT }}
+            envs: JENKINS_ADMIN_ID, JENKINS_ADMIN_PASSWORD, JENKINS_RESERVE_URL, ACR_ADDR, ACR_PASS, ACR_UID, DATASOURCE_PASSWORD, DATASOURCE_URL, DATASOURCE_USER, JWT_SECRET, MY_PASSWORD, SUBSCRIPTION_ID, VMIP, SSH_PRIVATE_FILE_PATH, CHAT_ID, TELEGRAM_TOKEN, SONAR_TOKEN, SONAR_SERVER, NEXUS_SERVER, NEXUS_USER, NEXUS_PASSWORD
             script: |
               docker rm -f JenkinsTest
               docker login ${{ secrets.REGISTRY_LOGIN_SERVER }} -u${{ secrets.REGISTRY_USERNAME }} -p${{ secrets.REGISTRY_PASSWORD }}
               docker pull ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:actions
               docker run -d -p 8282:8080 --name JenkinsTest \
               -v /var/run/docker.sock:/var/run/docker.sock \
-              --env JENKINS_ADMIN_ID="${{ secrets.JENKINS_ADMIN_ID }}" \
-              --env JENKINS_ADMIN_PASSWORD="${{ secrets.JENKINS_ADMIN_PASSWOR }}" \
-              --env JENKINS_RESERVE_URL="${{ secrets.JENKINS_RESERVE_URL }}" \
-              --env ACR_ADDR="${{ secrets.REGISTRY_LOGIN_SERVER }}" \
-              --env ACR_PASS="${{ secrets.REGISTRY_PASSWORD }}" \
-              --env ACR_UID="${{ secrets.REGISTRY_USERNAME }}" \
-              --env DATASOURCE_PASSWORD="${{ secrets.DATASOURCE_PASSWORD }}" \
-              --env DATASOURCE_URL="${{ secrets.DATASOURCE_URL }}" \
-              --env DATASOURCE_USER="${{ secrets.DATASOURCE_USER }}" \
-              --env JWT_SECRET="${{ secrets.JWT_SECRET }}" \
-              --env MY_PASSWORD="${{ secrets.MY_PASSWORD }}" \
-              --env SUBSCRIPTION_ID="${{ secrets.SUBSCRIPTION_ID }}" \
-              --env VMIP="${{ secrets.HOST }}" \
-              --env SSH_PRIVA2TE_FILE_PATH="${{ secrets.SSH_PRIVATE_FILE_PATH }}" \
-              --env CHAT_ID="${{ secrets.CHAT_ID }}" \
-              --env TELEGRAM_TOKEN="${{ secrets.TELEGRAM_TOKEN }}" \
-              --env SONAR_TOKEN="${{ secrets.SONAR_TOKEN }}" \
-              --env SONAR_SERVER="${{ secrets.SONAR_SERVER }}" \
-              --env NEXUS_SERVER="${{ secrets.NEXUS_SERVER }}" \
-              --env NEXUS_USER="${{ secrets.NEXUS_USER }}" \
-              --env NEXUS_PASSWORD="${{ secrets.NEXUS_PASSWORD }}" \
-              ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:actions
+              --env JENKINS_ADMIN_ID="${JENKINS_ADMIN_ID}" \
+              --env JENKINS_ADMIN_PASSWORD="${JENKINS_ADMIN_PASSWORD}" \
+              --env JENKINS_RESERVE_URL="${JENKINS_RESERVE_URL}" \
+              --env ACR_ADDR="${ACR_ADDR}" \
+              --env ACR_PASS="${ACR_PASS}" \
+              --env ACR_UID="${ACR_UID}" \
+              --env DATASOURCE_PASSWORD="${DATASOURCE_PASSWORD}" \
+              --env DATASOURCE_URL="${DATASOURCE_URL}" \
+              --env DATASOURCE_USER="${DATASOURCE_USER}" \
+              --env JWT_SECRET="${JWT_SECRET}" \
+              --env MY_PASSWORD="${MY_PASSWORD}" \
+              --env SUBSCRIPTION_ID="${SUBSCRIPTION_ID}" \
+              --env VMIP="${VMIP}" \
+              --env SSH_PRIVATE_FILE_PATH="${SSH_PRIVATE_FILE_PATH}" \
+              --env CHAT_ID="${CHAT_ID}" \
+              --env TELEGRAM_TOKEN="${TELEGRAM_TOKEN}" \
+              --env SONAR_TOKEN="${SONAR_TOKEN}" \
+              --env SONAR_SERVER="${SONAR_SERVER}" \
+              --env NEXUS_SERVER="${NEXUS_SERVER}" \
+              --env NEXUS_USER="${NEXUS_USER}" \
+              --env NEXUS_PASSWORD="${NEXUS_PASSWORD}" \
+              registry646.azurecr.io/jenkins:latest
+              
+              
+              # docker run -d -p 8282:8080 --name JenkinsTest \
+              # -v /var/run/docker.sock:/var/run/docker.sock \
+              # --env JENKINS_ADMIN_ID="${{ secrets.JENKINS_ADMIN_ID }}" \
+              # --env JENKINS_ADMIN_PASSWORD="${{ secrets.JENKINS_ADMIN_PASSWOR }}" \
+              # --env JENKINS_RESERVE_URL="${{ secrets.JENKINS_RESERVE_URL }}" \
+              # --env ACR_ADDR="${{ secrets.REGISTRY_LOGIN_SERVER }}" \
+              # --env ACR_PASS="${{ secrets.REGISTRY_PASSWORD }}" \
+              # --env ACR_UID="${{ secrets.REGISTRY_USERNAME }}" \
+              # --env DATASOURCE_PASSWORD="${{ secrets.DATASOURCE_PASSWORD }}" \
+              # --env DATASOURCE_URL="${{ secrets.DATASOURCE_URL }}" \
+              # --env DATASOURCE_USER="${{ secrets.DATASOURCE_USER }}" \
+              # --env JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+              # --env MY_PASSWORD="${{ secrets.MY_PASSWORD }}" \
+              # --env SUBSCRIPTION_ID="${{ secrets.SUBSCRIPTION_ID }}" \
+              # --env VMIP="${{ secrets.HOST }}" \
+              # --env SSH_PRIVA2TE_FILE_PATH="${{ secrets.SSH_PRIVATE_FILE_PATH }}" \
+              # --env CHAT_ID="${{ secrets.CHAT_ID }}" \
+              # --env TELEGRAM_TOKEN="${{ secrets.TELEGRAM_TOKEN }}" \
+              # --env SONAR_TOKEN="${{ secrets.SONAR_TOKEN }}" \
+              # --env SONAR_SERVER="${{ secrets.SONAR_SERVER }}" \
+              # --env NEXUS_SERVER="${{ secrets.NEXUS_SERVER }}" \
+              # --env NEXUS_USER="${{ secrets.NEXUS_USER }}" \
+              # --env NEXUS_PASSWORD="${{ secrets.NEXUS_PASSWORD }}" \
+              # ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:actions
               
