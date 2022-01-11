@@ -22,7 +22,7 @@ jobs:
             host: ${{ secrets.SONAR_SERVER }}
             login: ${{ secrets.SONAR_TOKEN }}
             projectKey: jenkinsCasC
-            projectName: "Jenkins CasC"
+            projectName: "Jenkins_CasC"
 
         - name: 'Create secret file'
           run: |
