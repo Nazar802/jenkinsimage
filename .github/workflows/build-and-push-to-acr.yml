@@ -17,9 +17,13 @@ jobs:
         
         - name: 'SonarQube Scan'
           uses: kitabisa/sonarqube-action@v1.1.0
+          env:
+            JAVA_HOME: /usr/lib/jvm/java-11-openjdk
           with:
             host: ${{ secrets.SONAR_SERVER }}
             login: ${{ secrets.SONAR_TOKEN }}
+            projectKey: jenkinsCasC
+            projectName: "Jenkins CasC"
 
         - name: 'Create secret file'
           run: |
