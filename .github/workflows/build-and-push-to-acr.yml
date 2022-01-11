@@ -11,21 +11,18 @@ jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
         steps:
-        # setup sonar-scanner
-        - name: Setup sonar scanner
-          uses: warchant/setup-sonar-scanner@v
-        
         # checkout the repo
         - name: 'Checkout GitHub Action'
           uses: actions/checkout@main
-       
+
         - name: 'SonarQube Scan'
-          run: sonar-scanner
-            -Dsonar.host.url=${{ secrets.SONAR_SERVER }}
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-            -Dsonar.projectKey=JenkinsCasC
-            -Dsonar.projectName="Jecntins CasC"
-            -Dsonar.scm.provider=git
+          uses: kitabisa/sonarqube-action@v1.1.0
+          with:
+            envs: JAVA_HOME
+            host: ${{ secrets.SONAR_SERVER }}
+            login: ${{ secrets.SONAR_TOKEN }}
+            projectKey: jenkinsCasC
+            projectName: "Jenkins CasC"
 
         - name: 'Create secret file'
           run: |
