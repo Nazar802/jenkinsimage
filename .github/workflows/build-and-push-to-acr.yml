@@ -33,9 +33,10 @@ jobs:
           run: |
             docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:actions
             docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/jenkins:actions 
-        
-        - name: 'Pass environment variables'
-          run: echo "ENV"
+
+        # execute remote commands
+        - name: 'Deploy Container to Azure VM'
+          uses: appleboy/ssh-action@master
           env:
             JENKINS_ADMIN_ID: ${{ secrets.JENKINS_ADMIN_ID }}
             JENKINS_ADMIN_PASSWORD: ${{ secrets.JENKINS_ADMIN_PASSWORD }}
@@ -58,10 +59,6 @@ jobs:
             NEXUS_SERVER: ${{ secrets.NEXUS_SERVER }}
             NEXUS_USER: ${{ secrets.NEXUS_USER }}
             NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-
-        # execute remote commands
-        - name: 'Deploy Container to Azure VM'
-          uses: appleboy/ssh-action@master
           with:
             host: ${{ secrets.HOST }}
             username: ${{ secrets.USERNAME }}
