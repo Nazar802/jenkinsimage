@@ -26,6 +26,7 @@ jobs:
               -Dsonar.host.url=${{ secrets.SONAR_SERVER }}
               -Dsonar.projectKey=jenkins
               -Dsonar.projectName=Jenkins
+              -Dsonar.scm.provider=git
 
         - name: 'Create secret file'
           run: |
