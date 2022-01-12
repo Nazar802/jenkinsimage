@@ -104,6 +104,6 @@ jobs:
               --env NEXUS_SERVER="${NEXUS_SERVER}" \
               --env NEXUS_USER="${NEXUS_USER}" \
               --env NEXUS_PASSWORD="${NEXUS_PASSWORD}" \
-              registry646.azurecr.io/jenkins:latest
+              registry646.azurecr.io/jenkins:actions
 
               
