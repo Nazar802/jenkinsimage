@@ -31,66 +31,25 @@
       </triggers>
     </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2648.va9433432b33c">
-    <script>throttle([&apos;Lock&apos;]) {
-    node {
-        try {
-            def remote = [:]
-            
-            withCredentials([sshUserPrivateKey(credentialsId: &apos;ssh&apos;, keyFileVariable: &apos;file&apos;, passphraseVariable: &apos;pass&apos;, usernameVariable: &apos;user&apos;)]) {
-                remote.identityFile = file
-                remote.name = &apos;terraform&apos;
-                remote.host = &quot;${VMIP}&quot;
-                remote.user = &apos;azureuser&apos;
-                remote.allowAnyHosts = true    
-                
-                stage (&apos;Terraform destroy&apos;) {
-                    writeFile file: &apos;cleanup.sh&apos;, text:
-                    &quot;cd ~/cluster\nterraform destroy -auto-approve\n cd ..\nrm -rf cluster&quot;
-                    sshScript remote: remote, script: &quot;cleanup.sh&quot;
-                }
-                
-                stage (&apos;Scm checkout&apos;) {
-                    git branch: &apos;terraformk8s&apos;, url: &apos;https://github.com/Nazar802/demo3.git&apos;
-                    sshCommand remote: remote, command: &quot;git clone --branch terraformk8s https://github.com/Nazar802/demo3.git cluster&quot;
-                }
-                
-                stage (&apos;Terraform apply&apos;) {
-                    writeFile file: &apos;start.sh&apos;, text:
-                    &quot;cd ~/cluster\nterraform init\nterraform apply -auto-approve&quot;
-                    sshScript remote: remote, script: &quot;start.sh&quot;
-                }
-                
-                stage (&apos;Connect to cluster&apos;) {
-                    writeFile file: &apos;connect.sh&apos;, text:
-                    &quot;az account set --subscription ${SUBSCRIPTION_ID}\naz aks get-credentials --resource-group azure-k8stest --name k8stest --overwrite-existing&quot;
-                    sshScript remote: remote, script: &quot;connect.sh&quot;
-                }
-                
-                stage (&apos;Connect to ACR&apos;) {
-                    writeFile file: &apos;connect.sh&apos;, text:
-                    &quot;docker login ${ACR_ADDR} -u${ACR_UID} -p${ACR_PASS}\ncat ~/.docker/config.json\nkubectl create secret generic regcred --from-file=.dockerconfigjson=/home/azureuser/.docker/config.json --type=kubernetes.io/dockerconfigjson&quot;
-                    sshScript remote: remote, script: &quot;connect.sh&quot;
-                }
-                
-            }
-            withCredentials([string(credentialsId: &apos;chatID&apos;, variable: &apos;notif&apos;)]) {
-                sh  (&quot;&quot;&quot;
-                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&apos; Kubernetes job succeeded&apos;
-                &quot;&quot;&quot;)
-            }
-        }
-        catch (e) {
-            withCredentials([string(credentialsId: &apos;chatID&apos;, variable: &apos;notif&apos;)]) {
-                sh  (&quot;&quot;&quot;
-                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&quot; Kubernetes job failed&quot;
-                &quot;&quot;&quot;)
-            }
-            throw e
-        }
-    }
-}</script>
-    <sandbox>true</sandbox>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2648.va9433432b33c">
+    <scm class="hudson.plugins.git.GitSCM" plugin="git@4.10.1">
+      <configVersion>2</configVersion>
+      <userRemoteConfigs>
+        <hudson.plugins.git.UserRemoteConfig>
+          <url>https://github.com/Nazar802/demo3.git</url>
+        </hudson.plugins.git.UserRemoteConfig>
+      </userRemoteConfigs>
+      <branches>
+        <hudson.plugins.git.BranchSpec>
+          <name>*/terraformk8s</name>
+        </hudson.plugins.git.BranchSpec>
+      </branches>
+      <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+      <submoduleCfg class="empty-list"/>
+      <extensions/>
+    </scm>
+    <scriptPath>Jenkinsfile</scriptPath>
+    <lightweight>true</lightweight>
   </definition>
   <triggers/>
   <disabled>false</disabled>

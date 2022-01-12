@@ -25,75 +25,25 @@
       </triggers>
     </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2648.va9433432b33c">
-    <script>throttle([&apos;Lock&apos;]) {
-    node {
-        env.NODEJS_HOME = &quot;${tool &apos;NodeJS&apos;}&quot;
-        env.PATH=&quot;${NODEJS_HOME}/bin:${env.PATH}&quot;
-        try {
-            def remote = [:]
-            
-            stage (&apos;Scm checkout&apos;) {
-                git branch: &apos;frontImage&apos;, url: &apos;https://github.com/Nazar802/demo3.git&apos;
-            }
-            
-            stage (&apos;Npm install&apos;) {
-                sh &quot;npm install&quot;
-            }
-            
-            stage (&apos;Npm build&apos;) {
-                sh &quot;npm run build&quot;
-            }
-            
-            withSonarQubeEnv (&apos;SonarQube&apos;) {
-                stage (&apos;Sonar Scan&apos;) {
-                    def sonarScanner = tool name: &apos;SonarQube&apos;, type: &apos;hudson.plugins.sonar.SonarRunnerInstallation&apos;
-                    def sonarCMD = &quot;${sonarScanner}/bin/sonar-scanner&quot;
-                    sh &quot;${sonarCMD} -Dsonar.projectKey=frontend -Dsonar.sources=. -Dsonar.projectName=frontend&quot;
-                }
-            }
-            
-            stage(&quot;Quality Gate&quot;){
-                timeout(time: 1, unit: &apos;HOURS&apos;) {
-                    def qg = waitForQualityGate()
-                        if (qg.status != &apos;OK&apos;) {
-                            sh  (&quot;&quot;&quot;
-                            curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&apos; Rewrite the code. Quality gate for backend failed&apos;
-                            &quot;&quot;&quot;)
-                            error &quot;Pipeline aborted due to quality gate failure: ${qg.status}&quot;
-                    }
-                }
-            } 
-            
-            stage (&apos;Docker Build&apos;) {
-                def dockerHome = tool name: &apos;Docker&apos;, type: &apos;dockerTool&apos;
-                def dockerCMD = &quot;${dockerHome}/bin/docker&quot;
-                sh &quot;${dockerCMD} build . -t ${ACR_ADDR}/frontend:latest&quot;
-            }
-                
-            stage (&apos;Docker Push&apos;) {
-                def dockerHome = tool name: &apos;Docker&apos;, type: &apos;dockerTool&apos;
-                def dockerCMD = &quot;${dockerHome}/bin/docker&quot;
-                sh &quot;${dockerCMD} login ${ACR_ADDR} -u${ACR_UID} -p${ACR_PASS}&quot;
-                sh &quot;${dockerCMD} push ${ACR_ADDR}/frontend:latest&quot;
-            }
-            withCredentials([string(credentialsId: &apos;chatID&apos;, variable: &apos;notif&apos;)]) {
-                sh  (&quot;&quot;&quot;
-                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&apos; Front Image job succeeded&apos;
-                &quot;&quot;&quot;)
-            }
-        }
-        catch (e) {
-            withCredentials([string(credentialsId: &apos;chatID&apos;, variable: &apos;notif&apos;)]) {
-                sh  (&quot;&quot;&quot;
-                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&quot; Front Image job failed&quot;
-                &quot;&quot;&quot;)
-            }
-            throw e
-        }
-    }
-}</script>
-    <sandbox>true</sandbox>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2648.va9433432b33c">
+    <scm class="hudson.plugins.git.GitSCM" plugin="git@4.10.1">
+      <configVersion>2</configVersion>
+      <userRemoteConfigs>
+        <hudson.plugins.git.UserRemoteConfig>
+          <url>https://github.com/Nazar802/demo3.git</url>
+        </hudson.plugins.git.UserRemoteConfig>
+      </userRemoteConfigs>
+      <branches>
+        <hudson.plugins.git.BranchSpec>
+          <name>*/frontImage</name>
+        </hudson.plugins.git.BranchSpec>
+      </branches>
+      <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+      <submoduleCfg class="empty-list"/>
+      <extensions/>
+    </scm>
+    <scriptPath>Jenkinsfile</scriptPath>
+    <lightweight>true</lightweight>
   </definition>
   <triggers/>
   <disabled>false</disabled>

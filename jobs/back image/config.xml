@@ -25,82 +25,25 @@
       </triggers>
     </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2648.va9433432b33c">
-    <script>throttle([&apos;Lock&apos;]) {
-    node {
-        try {
-            stage (&apos;Scm checkout&apos;) {
-                git branch: &apos;backImage&apos;, url: &apos;https://github.com/Nazar802/demo3.git&apos;
-            }
-            
-            withSonarQubeEnv (&apos;SonarQube&apos;) {
-                stage (&apos;Mvn Package&apos;) {
-                    def mvnHome = tool name: &apos;Maven&apos;, type: &apos;maven&apos;
-                    def mvnCMD = &quot;${mvnHome}/bin/mvn&quot;
-                    sh &quot;${mvnCMD} clean package sonar:sonar&quot;
-                }
-            }
-            
-            stage(&quot;Quality Gate&quot;){
-                timeout(time: 1, unit: &apos;HOURS&apos;) {
-                    def qg = waitForQualityGate()
-                        if (qg.status != &apos;OK&apos;) {
-                            sh  (&quot;&quot;&quot;
-                            curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&apos; Rewrite the code. Quality gate for backend failed&apos;
-                            &quot;&quot;&quot;)
-                            error &quot;Pipeline aborted due to quality gate failure: ${qg.status}&quot;
-                    }
-                }
-            } 
-            
-            stage (&apos;Upload To Nexus&apos;) {
-                def mavenPom = readMavenPom file: &apos;pom.xml&apos;
-                nexusArtifactUploader artifacts: [
-                        [artifactId: &apos;TeachUA&apos;, 
-                        classifier: &apos;&apos;, 
-                        file: &quot;target/dev.war&quot;, 
-                        type: &apos;war&apos;
-                        ]
-                    ], 
-                    credentialsId: &apos;nexus&apos;, 
-                    groupId: &apos;com.softserve.teachua&apos;, 
-                    nexusUrl: &apos;${NEXUS_SERVER}&apos;, 
-                    nexusVersion: &apos;nexus3&apos;, 
-                    protocol: &apos;http&apos;, 
-                    repository: &apos;backend/&apos;, 
-                    version: &quot;${mavenPom.version}&quot;
-            }
-            
-            stage (&apos;Docker Build&apos;) {
-                def dockerHome = tool name: &apos;Docker&apos;, type: &apos;dockerTool&apos;
-                def dockerCMD = &quot;${dockerHome}/bin/docker&quot;
-                sh &quot;${dockerCMD} build . -t ${ACR_ADDR}/backend:latest&quot;
-            }
-                
-            stage (&apos;Docker Push&apos;) {
-                def dockerHome = tool name: &apos;Docker&apos;, type: &apos;dockerTool&apos;
-                def dockerCMD = &quot;${dockerHome}/bin/docker&quot;
-                sh &quot;${dockerCMD} login ${ACR_ADDR} -u${ACR_UID} -p${ACR_PASS}&quot;
-                sh &quot;${dockerCMD} push ${ACR_ADDR}/backend:latest&quot;
-            }
-            
-            withCredentials([string(credentialsId: &apos;chatID&apos;, variable: &apos;notif&apos;)]) {
-                sh  (&quot;&quot;&quot;
-                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&apos; Back Image job succeeded&apos;
-                &quot;&quot;&quot;)
-            }
-        }
-        catch (e) {
-            withCredentials([string(credentialsId: &apos;chatID&apos;, variable: &apos;notif&apos;)]) {
-                sh  (&quot;&quot;&quot;
-                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&quot; Back Image job failed&quot;
-                &quot;&quot;&quot;)
-            }
-            throw e
-        }
-    }
-}</script>
-    <sandbox>true</sandbox>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2648.va9433432b33c">
+    <scm class="hudson.plugins.git.GitSCM" plugin="git@4.10.1">
+      <configVersion>2</configVersion>
+      <userRemoteConfigs>
+        <hudson.plugins.git.UserRemoteConfig>
+          <url>https://github.com/Nazar802/demo3.git</url>
+        </hudson.plugins.git.UserRemoteConfig>
+      </userRemoteConfigs>
+      <branches>
+        <hudson.plugins.git.BranchSpec>
+          <name>*/backImage</name>
+        </hudson.plugins.git.BranchSpec>
+      </branches>
+      <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+      <submoduleCfg class="empty-list"/>
+      <extensions/>
+    </scm>
+    <scriptPath>Jenkinsfile</scriptPath>
+    <lightweight>true</lightweight>
   </definition>
   <triggers/>
   <disabled>false</disabled>
