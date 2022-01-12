@@ -67,14 +67,14 @@
             }
             withCredentials([string(credentialsId: &apos;chatID&apos;, variable: &apos;notif&apos;)]) {
                 sh  (&quot;&quot;&quot;
-                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&quot;Oh Yeah! Ingress job succeeded. Infrastructure is deployed.\nGo to http://teachua.centralus.cloudapp.azure.com/&quot;
+                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&quot; Ingress job succeeded. Infrastructure is deployed.\nGo to http://teachua.centralus.cloudapp.azure.com/&quot;
                 &quot;&quot;&quot;)
             }
         }
         catch (e) {
             withCredentials([string(credentialsId: &apos;chatID&apos;, variable: &apos;notif&apos;)]) {
                 sh  (&quot;&quot;&quot;
-                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&quot;Fuck You! Ingress job failed&quot;
+                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&quot; Ingress job failed&quot;
                 &quot;&quot;&quot;)
             }
             throw e

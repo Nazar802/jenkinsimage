@@ -58,7 +58,7 @@
                     def qg = waitForQualityGate()
                         if (qg.status != &apos;OK&apos;) {
                             sh  (&quot;&quot;&quot;
-                            curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&apos;Fucking slaves! Rewrite the code. Quality gate for backend failed&apos;
+                            curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&apos; Rewrite the code. Quality gate for backend failed&apos;
                             &quot;&quot;&quot;)
                             error &quot;Pipeline aborted due to quality gate failure: ${qg.status}&quot;
                     }
@@ -79,14 +79,14 @@
             }
             withCredentials([string(credentialsId: &apos;chatID&apos;, variable: &apos;notif&apos;)]) {
                 sh  (&quot;&quot;&quot;
-                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&apos;Oh Yeah! Front Image job succeeded&apos;
+                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&apos; Front Image job succeeded&apos;
                 &quot;&quot;&quot;)
             }
         }
         catch (e) {
             withCredentials([string(credentialsId: &apos;chatID&apos;, variable: &apos;notif&apos;)]) {
                 sh  (&quot;&quot;&quot;
-                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&quot;Fuck You! Front Image job failed&quot;
+                curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text=&quot; Front Image job failed&quot;
                 &quot;&quot;&quot;)
             }
             throw e
