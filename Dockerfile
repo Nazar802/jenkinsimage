@@ -11,3 +11,4 @@ COPY --chown=jenkins:jenkins key.pem /var/jenkins_home/key.pem
 ADD --chown=jenkins:jenkins jobs /var/jenkins_home/jobs
 
 VOLUME /var/jenkins_home
+ 
